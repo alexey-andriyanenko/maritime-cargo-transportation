@@ -26,6 +26,7 @@ public class Program
 
         app.UseAuthorization();
 
+        app.MapGet("/", () => "OK");
 
         app.MapControllers();
 
