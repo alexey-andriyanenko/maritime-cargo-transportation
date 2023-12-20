@@ -1,3 +1,7 @@
+using Domain.User.Interfaces;
+using Infrastructure.Database.Repositories;
+using Infrastructure.Repositories;
+
 namespace ApplicationCore;
 
 public class Program
@@ -12,6 +16,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
 
         var app = builder.Build();
 
@@ -26,7 +31,11 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapGet("/", () => "OK");
+        app.MapGet("/getallusers", async () =>
+        {
+            var ur = new UserRepository();
+            return await ur.GetAllAsync();
+        });
 
         app.MapControllers();
 

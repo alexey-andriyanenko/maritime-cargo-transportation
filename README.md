@@ -5,8 +5,19 @@
 
 How to run
 ----------
+Run application container
 ```bash
 docker run --rm -p 8080:8080 --name maritime-container maritime-cargo-aspnet
+```
+
+Run PostgreSQL container
+```bash
+docker run --rm -p 5432:5432 --name maritime-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_USER=postgres -e POSTGRES_DB=maritime postgres
+```
+
+Connect to PostgreSQL container
+```bash
+docker exec -it maritime-db psql sh -c "psql --host=localhost --user=postgres"
 ```
 
 
@@ -14,7 +25,10 @@ docker run --rm -p 8080:8080 --name maritime-container maritime-cargo-aspnet
 
 ![png](./docs/architecture.drawio.png)
 
-*initial diagram of entities ↓*
+*domain entities ↓*
 
-![png](./docs/maritime-cargo-transportation.drawio.png)
+![png](./docs/domain-entities.drawio.png)
+
+*database entities ↓*
+![png](./docs/database-entities.drawio.png)
 

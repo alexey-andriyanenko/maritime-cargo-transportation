@@ -7,7 +7,12 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Dapper" Version="2.1.24"/>
+        <PackageReference Include="Npgsql" Version="8.0.1"/>
     </ItemGroup>
 
 </Project>
