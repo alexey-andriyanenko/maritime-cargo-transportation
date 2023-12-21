@@ -1,8 +1,7 @@
 using Domain.User.Interfaces;
 using Infrastructure.Database.Repositories;
-using Infrastructure.Repositories;
 
-namespace ApplicationCore;
+namespace Web;
 
 public class Program
 {
@@ -31,11 +30,6 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapGet("/getallusers", async () =>
-        {
-            var ur = new UserRepository();
-            return await ur.GetAllAsync();
-        });
 
         app.MapControllers();
 

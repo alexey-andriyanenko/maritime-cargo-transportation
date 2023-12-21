@@ -10,12 +10,16 @@ public class UserRepository : IUserRepository
 {
     private readonly string _connectionString = DatabaseHelpers.GetConnectionString();
 
-    public async Task<User> GetByEmailAsync(string email)
+    public async Task<User?> GetByEmailAsync(string email)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             _dbConnection.Open();
-            return await _dbConnection.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE Email = @Email",
+
+            var sql =
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE email = @Email";
+
+            return await _dbConnection.QueryFirstOrDefaultAsync<User>(sql,
                 new { Email = email });
         }
     }
@@ -52,12 +56,17 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<User> GetByIdAsync(int id)
+    public async Task<User?> GetByIdAsync(int id)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             _dbConnection.Open();
-            return await _dbConnection.QueryFirstOrDefaultAsync<User>("SELECT * FROM Users WHERE Id = @Id",
+
+            var sql =
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE id = @Id";
+
+            return await _dbConnection.QueryFirstOrDefaultAsync<User>(
+                sql,
                 new { Id = id });
         }
     }
@@ -67,18 +76,12 @@ public class UserRepository : IUserRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             _dbConnection.Open();
-            var result = await _dbConnection.QueryFirstOrDefaultAsync<User>(
-                "INSERT INTO Users (Id, Email, Password, FirstName, LastName, CreatedAt, UpdatedAt) VALUES (@Id, @Email, @Password, @FirstName, @LastName, @CreatedAt, @UpdatedAt) RETURNING *",
-                new
-                {
-                    user.Id,
-                    user.Email,
-                    user.Password,
-                    user.FirstName,
-                    user.LastName
-                });
+            var sql =
+                "INSERT INTO users (email, password, first_name, last_name) VALUES (@Email, @Password, @FirstName, @LastName) RETURNING id";
 
-            return result?.Id;
+            var result = await _dbConnection.QueryFirstOrDefaultAsync<int?>(sql, user);
+
+            return result?.Equals(0) == true ? null : result;
         }
     }
 }
