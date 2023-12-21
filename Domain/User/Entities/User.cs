@@ -9,5 +9,5 @@ public class User : BaseEntity
     public string LastName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
-    public IReadOnlyCollection<Company.Entities.Company> Companies { get; set; }
+    public List<Company.Entities.Company> Companies { get; set; }
 }

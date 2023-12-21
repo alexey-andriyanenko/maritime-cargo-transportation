@@ -1,6 +1,6 @@
-CREATE DATABASE maritimecargotransportationdb;
+CREATE DATABASE maritime_cargo_transportation_db;;
 
-\c maritimecargotransportationdb;
+\c maritime_cargo_transportation_db;
 
 CREATE TABLE users
 (
@@ -11,11 +11,17 @@ CREATE TABLE users
     password   varchar(50)        not null
 );
 
-CREATE TABLE Companies
+CREATE TABLE companies
 (
-    id      serial primary key,
-    user_id int                not null references users (id),
-    name    varchar(50) unique not null
+    id   serial primary key,
+    name varchar(50) unique not null
+);
+
+CREATE TABLE users_to_companies
+(
+    id         serial primary key,
+    user_id    int not null references users (id),
+    company_id int not null references companies (id)
 );
 
 CREATE TABLE ship_types
@@ -34,139 +40,132 @@ CREATE TABLE ships
 (
     id           serial primary key,
     name         varchar(50) unique not null,
-    flag_id      int                not null references Flags (id),
-    ship_type_id int                not null references ShipTypes (id),
-    company_id   int                not null references Companies (id)
+    flag_id      int                not null references flags (id),
+    ship_type_id int                not null references ship_types (id),
+    company_id   int                not null references companies (id)
 );
 
-CREATE TABLE ContainerShipSizeTypes
+CREATE TABLE container_ship_size_types
 (
     id   serial primary key,
     name varchar(50) unique not null
 );
 
-CREATE TABLE ContainerTypes
+CREATE TABLE container_types
 (
     id   serial primary key,
     name varchar(50) unique not null
 );
 
-CREATE TABLE CargoTypes
+CREATE TABLE cargo_types
 (
     id   serial primary key,
     name varchar(50) unique not null
 );
 
 
-CREATE TABLE Cargoes
+CREATE TABLE cargoes
 (
-    id          serial primary key,
-    cargoTypeId int not null references CargoTypes (id)
+    id            serial primary key,
+    cargo_type_id int not null references cargo_types (id)
 );
 
-CREATE TABLE ContainerShip
+CREATE TABLE container_ships
 (
-    id     serial primary key,
-    shipId int not null references Ships (id),
-    sizeId int not null references ContainerShipSizeTypes (id)
+    id      serial primary key,
+    ship_id int not null references ships (id),
+    size_id int not null references container_ship_size_types (id)
 );
 
-CREATE TABLE Containers
+CREATE TABLE containers
 (
-    id              serial primary key,
-    containerShipId int not null references ContainerShip (id),
-    containerTypeId int not null references ContainerTypes (id),
-    cargoId         int not null references Cargoes (id)
+    id                serial primary key,
+    container_ship_id int not null references container_ships (id),
+    container_type_id int not null references container_types (id),
+    cargo_id          int not null references cargoes (id)
 );
 
 -- seed
 
-insert into Users (firstname, lastname, email, password)
-values ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ');
-insert into Users (firstname, lastname, email, password)
-values ('Ronny', 'Wishart', 'rwishart1@state.tx.us', 'sY3*<SP(meGE');
-insert into Users (firstname, lastname, email, password)
-values ('Rhody', 'Mardling', 'rmardling2@purevolume.com', 'mC6_%?(y');
-insert into Users (firstname, lastname, email, password)
-values ('Beaufort', 'Emmett', 'bemmett3@360.cn', 'fF2(|AHqvu''%oK');
-insert into Users (firstname, lastname, email, password)
-values ('Colman', 'Cluitt', 'ccluitt4@blog.com', 'qB5{|3,)#qk''PE1');
-insert into Users (firstname, lastname, email, password)
-values ('Nalani', 'Danniell', 'ndanniell5@unblog.fr', 'zI7.5J_K,w\F');
-insert into Users (firstname, lastname, email, password)
-values ('Brock', 'Sayers', 'bsayers6@unc.edu', 'mU3~Iv)KNq@jxLLF');
-insert into Users (firstname, lastname, email, password)
-values ('Hillyer', 'Kale', 'hkale7@utexas.edu', 'lU0&G_BvYc7"E');
-insert into Users (firstname, lastname, email, password)
-values ('Langston', 'Brewitt', 'lbrewitt8@census.gov', 'uV2@"jX''A');
-insert into Users (firstname, lastname, email, password)
-values ('Dulce', 'Edyson', 'dedyson9@mysql.com', 'yZ0=)mC@g<kWW');
+insert into users (first_name, last_name, email, password)
+values ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ'),
+       ('Ronny', 'Wishart', 'rwishart1@state.tx.us', 'sY3*<SP(meGE'),
+       ('Rhody', 'Mardling', 'rmardling2@purevolume.com', 'mC6_%?(y'),
+       ('Beaufort', 'Emmett', 'bemmett3@360.cn', 'fF2(|AHqvu''%oK'),
+       ('Colman', 'Cluitt', 'ccluitt4@blog.com', 'qB5{|3,)#qk''PE1'),
+       ('Nalani', 'Danniell', 'ndanniell5@unblog.fr', 'zI7.5J_K,w\F'),
+       ('Brock', 'Sayers', 'bsayers6@unc.edu', 'mU3~Iv)KNq@jxLLF'),
+       ('Hillyer', 'Kale', 'hkale7@utexas.edu', 'lU0&G_BvYc7"E'),
+       ('Langston', 'Brewitt', 'lbrewitt8@census.gov', 'uV2@"jX''A'),
+       ('Dulce', 'Edyson', 'dedyson9@mysql.com', 'yZ0=)mC@g<kWW');
 
-insert into Companies (userid, name)
-values (1, 'JumpXS');
-insert into Companies (userid, name)
-values (2, 'Kwinu');
-insert into Companies (userid, name)
-values (3, 'Edgeblab');
-insert into Companies (userid, name)
-values (4, 'Kazio');
-insert into Companies (userid, name)
-values (5, 'Skidoo');
-insert into Companies (userid, name)
-values (6, 'Realcube');
-insert into Companies (userid, name)
-values (7, 'Meevee');
-insert into Companies (userid, name)
-values (9, 'Realcube');
-insert into Companies (userid, name)
-values (1, 'Thoughtblab');
-insert into Companies (userid, name)
-values (2, 'Vinder');
-insert into Companies (userid, name)
-values (3, 'Eamia');
-insert into Companies (userid, name)
-values (4, 'Realmix');
-insert into Companies (userid, name)
-values (5, 'Realmix');
-insert into Companies (userid, name)
-values (6, 'Zooveo');
-insert into Companies (userid, name)
-values (7, 'Blogtags');
-insert into Companies (userid, name)
-values (8, 'Brightbean');
-insert into Companies (userid, name)
-values (9, 'Eamia');
-insert into Companies (userid, name)
-values (1, 'Eazzy');
-insert into Companies (userid, name)
-values (2, 'Quinu');
-insert into Companies (userid, name)
-values (3, 'Jaloo');
-insert into Companies (userid, name)
-values (4, 'Layo');
-insert into Companies (userid, name)
-values (5, 'Yodel');
-insert into Companies (userid, name)
-values (6, 'Linktype');
-insert into Companies (userid, name)
-values (7, 'Yambee');
-insert into Companies (userid, name)
-values (8, 'Meembee');
-insert into Companies (userid, name)
-values (9, 'Kamba');
+insert into companies (name)
+values ('JumpXS'),
+       ('Thoughtblab'),
+       ('Eazzy'),
+       ('Kwinu'),
+       ('Vinder'),
+       ('Quinu'),
+       ('Edgeblab'),
+       ('Victory'),
+       ('Jaloo'),
+       ('Kazio'),
+       ('Unrealmix'),
+       ('Layo'),
+       ('Skidoo'),
+       ('Realmix'),
+       ('Yodel'),
+       ('Unrealcube'),
+       ('Zooveo'),
+       ('Linktype'),
+       ('Meevee'),
+       ('Blogtags'),
+       ('Yambee'),
+       ('Brightbean'),
+       ('Meembee'),
+       ('Realcube'),
+       ('Eamia'),
+       ('Kamba');
 
+INSERT INTO users_to_companies (user_id, company_id)
+values (1, 1),
+       (1, 2),
+       (1, 3),
+       (2, 4),
+       (2, 5),
+       (2, 6),
+       (3, 7),
+       (3, 8),
+       (3, 9),
+       (4, 10),
+       (4, 11),
+       (4, 12),
+       (5, 13),
+       (5, 14),
+       (5, 15),
+       (6, 16),
+       (6, 17),
+       (6, 18),
+       (7, 19),
+       (7, 20),
+       (7, 21),
+       (8, 22),
+       (8, 23),
+       (9, 24),
+       (9, 25),
+       (9, 26);
 
-INSERT INTO Flags (name)
+INSERT INTO flags (name)
 values ('BERMUDA');
 
-INSERT INTO ShipTypes (name)
+INSERT INTO ship_types (name)
 values ('Container ship'),
        ('Tanker'),
        ('Roll-on/Roll-off vessel'),
        ('Dry bulk carrier'),
        ('Multi-purpose vessel');
 
-INSERT INTO CargoTypes (name)
+INSERT INTO cargo_types (name)
 values ('Bauxite'),
        ('Bulk minerals'),
        ('Cements'),
@@ -185,7 +184,7 @@ values ('Bauxite'),
        ('Fruit juices'),
        ('Rubber');
 
-INSERT INTO ContainerShipSizeTypes (name)
+INSERT INTO container_ship_size_types (name)
 values ('Ultra Large Container Vessel (ULCV)'),
        ('New Panamax'),
        ('Post-Panamax'),
@@ -194,7 +193,7 @@ values ('Ultra Large Container Vessel (ULCV)'),
        ('Feeder'),
        ('Small feeder');
 
-INSERT INTO ContainerTypes (name)
+INSERT INTO container_types (name)
 values ('General-purpose dry van'),
        ('Ventilated container'),
        ('Temperature controlled container'),
@@ -203,5 +202,5 @@ values ('General-purpose dry van'),
        ('Log cradle'),
        ('Trash container');
 
-INSERT INTO Ships (name, ownerCompanyId, flagId, shipTypeId)
-values ('initial-ship', '1', '1', '1');
+INSERT INTO ships (name, company_id, flag_id, ship_type_id)
+values ('initial-ship', 1, 1, 1);

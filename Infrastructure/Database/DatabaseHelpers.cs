@@ -4,6 +4,6 @@ public static class DatabaseHelpers
 {
     public static string GetConnectionString()
     {
-        return "Server=postgres-container;Port=5432;Database=maritimecargotransportationdb;User ID=postgres;Password=root;";
+        return "Server=maritime-db;Port=5432;Database=maritime_cargo_transportation_db;User ID=postgres;Password=root;";
     }
 }

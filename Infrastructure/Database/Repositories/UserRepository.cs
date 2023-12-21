@@ -1,7 +1,7 @@
 ﻿using Dapper;
+using Domain.Company.Entities;
 using Domain.User.Entities;
 using Domain.User.Interfaces;
-using Infrastructure.Database.Entities;
 using Npgsql;
 
 namespace Infrastructure.Database.Repositories;
@@ -26,10 +26,29 @@ public class UserRepository : IUserRepository
         {
             _dbConnection.Open();
 
-            UsersToCompaniesDB db;
+            var sql =
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email, companies.id Id, companies.name Name FROM users JOIN users_to_companies ON users.id = users_to_companies.user_id JOIN companies ON users_to_companies.company_id = companies.id";
 
-            // query to get all users and their companies
+            var users = await _dbConnection.QueryAsync<User, Company, User>(sql,
+                (user, company) =>
+                {
+                    if (user.Companies == null) user.Companies = new List<Company>();
+                    user.Companies.Add(company);
 
+                    return user;
+                }, splitOn: "id");
+
+            var result = users.GroupBy(user => user.Id).Select(group =>
+                {
+                    var groupedUser = group.First();
+
+                    groupedUser.Companies = group.Select(user => user.Companies.Single()).ToList();
+
+                    return groupedUser;
+                })
+                .ToList();
+
+            return result;
         }
     }
 
