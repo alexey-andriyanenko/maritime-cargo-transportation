@@ -1,5 +1,8 @@
+using Domain.Company.Interfaces;
+using Domain.Ship.Interfaces;
 using Domain.User.Interfaces;
 using Infrastructure.Database.Repositories;
+using Infrastructure.Repositories;
 
 namespace Web;
 
@@ -16,6 +19,8 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddScoped<ICompanyRepository, CompanyRespository>();
+        builder.Services.AddScoped<IShipRepository, ShipRepository>();
 
         var app = builder.Build();
 

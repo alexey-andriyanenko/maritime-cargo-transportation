@@ -1,10 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Domain.Company.Interfaces;
 
 public interface ICompanyRepository
 {
-    public Task<Entities.Company> GetCompanyByIdAsync(int id);
-    public Task<Entities.Company> GetCompanyByNameAsync(string name);
-    public Task<int> CreateCompanyAsync(Entities.Company company);
+    public Task<List<Entities.Company>> GetAllAsync();
+    public Task<Entities.Company?> GetByIdAsync(int id);
+    public Task<Entities.Company?> GetByNameAsync(string name);
+    public Task<int?> CreateAsync(Entities.Company company);
 }

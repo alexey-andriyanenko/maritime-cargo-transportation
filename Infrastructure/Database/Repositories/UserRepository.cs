@@ -79,9 +79,7 @@ public class UserRepository : IUserRepository
             var sql =
                 "INSERT INTO users (email, password, first_name, last_name) VALUES (@Email, @Password, @FirstName, @LastName) RETURNING id";
 
-            var result = await _dbConnection.QueryFirstOrDefaultAsync<int?>(sql, user);
-
-            return result?.Equals(0) == true ? null : result;
+            return await _dbConnection.ExecuteAsync(sql, user);
         }
     }
 }
