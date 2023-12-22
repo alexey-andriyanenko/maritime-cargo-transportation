@@ -23,12 +23,12 @@ docker exec -it maritime-db psql sh -c "psql --host=localhost --user=postgres"
 
 *layered architecture ↓*
 
-![png](./docs/architecture.drawio.png)
+![png](./Docs/architecture.drawio.png)
 
 *domain entities ↓*
 
-![png](./docs/domain-entities.drawio.png)
+![png](./Docs/domain-entities.drawio.png)
 
 *database entities ↓*
-![png](./docs/database-entities.drawio.png)
+![png](./Docs/database-entities.drawio.png)
 
