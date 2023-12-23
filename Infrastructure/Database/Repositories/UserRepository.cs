@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Domain.Company.Entities;
+using Domain.User.DTO;
 using Domain.User.Entities;
 using Domain.User.Interfaces;
 using Npgsql;
@@ -10,21 +11,7 @@ public class UserRepository : IUserRepository
 {
     private readonly string _connectionString = DatabaseHelpers.GetConnectionString();
 
-    public async Task<User?> GetByEmailAsync(string email)
-    {
-        using (var _dbConnection = new NpgsqlConnection(_connectionString))
-        {
-            _dbConnection.Open();
-
-            var sql =
-                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE email = @Email";
-
-            return await _dbConnection.QueryFirstOrDefaultAsync<User>(sql,
-                new { Email = email });
-        }
-    }
-
-    public async Task<List<User>> GetAllAsync()
+    public async Task<List<User>> GetListAsync()
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
@@ -56,6 +43,21 @@ public class UserRepository : IUserRepository
         }
     }
 
+
+    public async Task<User?> GetByEmailAsync(string email)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            _dbConnection.Open();
+
+            var sql =
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE email = @Email";
+
+            return await _dbConnection.QueryFirstOrDefaultAsync<User>(sql,
+                new { Email = email });
+        }
+    }
+
     public async Task<User?> GetByIdAsync(int id)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
@@ -71,7 +73,20 @@ public class UserRepository : IUserRepository
         }
     }
 
-    public async Task<int?> CreateAsync(User user)
+    public async Task<int?> UpdateAsync(int id, UserUpdateRequest user)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            _dbConnection.Open();
+
+            var sql = "UPDATE users SET first_name = @FirstName, last_name = @LastName, email = @Email WHERE id = @Id";
+
+            return await _dbConnection.ExecuteAsync(sql,
+                new { Id = id, user.FirstName, LastName = user.LastName, user.Email });
+        }
+    }
+
+    public async Task<int?> CreateAsync(UserCreateRequest user)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {

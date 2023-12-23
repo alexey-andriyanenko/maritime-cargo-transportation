@@ -18,7 +18,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Users\"/>
+        <Folder Include="Companies\DTO\"/>
+        <Folder Include="Ships\DTO\"/>
     </ItemGroup>
 
 </Project>
