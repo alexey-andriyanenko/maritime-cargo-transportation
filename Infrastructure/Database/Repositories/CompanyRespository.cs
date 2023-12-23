@@ -1,15 +1,16 @@
 ﻿using Dapper;
+using Domain.Company.DTO;
 using Domain.Company.Entities;
 using Domain.Company.Interfaces;
 using Npgsql;
 
 namespace Infrastructure.Database.Repositories;
 
-public class CompanyRespository : ICompanyRepository
+public class CompanyRepository : ICompanyRepository
 {
     private readonly string _connectionString = DatabaseHelpers.GetConnectionString();
 
-    public async Task<List<Company>> GetAllAsync()
+    public async Task<List<Company>> GetListAsync()
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
@@ -38,12 +39,21 @@ public class CompanyRespository : ICompanyRepository
         }
     }
 
-    public async Task<int?> CreateAsync(Company company)
+    public async Task<int?> UpdateAsync(int id, CompanyUpdateRequest company)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            var sql = "UPDATE companies SET name = @Name WHERE id = @Id";
+            return await _dbConnection.ExecuteAsync(sql, new { Id = id, company.Name });
+        }
+    }
+
+    public async Task<int?> CreateAsync(CompanyCreateRequest company)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql = "INSERT INTO companies (name) values (@Name) RETURNING id";
-            return await _dbConnection.ExecuteAsync(sql, new { company.Name });
+            return await _dbConnection.ExecuteAsync(sql, company);
         }
     }
 }

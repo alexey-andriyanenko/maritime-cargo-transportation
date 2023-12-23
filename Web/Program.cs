@@ -19,7 +19,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddScoped<ICompanyRepository, CompanyRespository>();
+        builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
         builder.Services.AddScoped<IShipRepository, ShipRepository>();
 
         var app = builder.Build();
