@@ -1,6 +1,7 @@
-﻿using Domain.Ship.Entities;
+﻿using Domain.Ship.DTO;
 using Domain.Ship.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Web.Ships.DTO;
 
 namespace Web.Controllers;
 
@@ -15,18 +16,46 @@ public class ShipsController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<Ship>>> GetListAsync()
+    public async Task<ActionResult<List<ShipResponse>>> GetListAsync()
     {
         var ships = await _shipRepository.GetListAsync();
-        return Ok(ships);
+        var result = ships.Select(ship => ship.ToResponse());
+        return Ok(result);
     }
 
     [HttpGet("id/{id:int}")]
-    public async Task<ActionResult<Ship>> GetByIdAsync([FromRoute] int id)
+    public async Task<ActionResult<ShipResponse>> GetByIdAsync([FromRoute] int id)
     {
         var ship = await _shipRepository.GetByIdAsync(id);
 
         if (ship == null) return NotFound();
-        return Ok(ship);
+        return Ok(ship.ToResponse());
+    }
+
+    [HttpGet("name/{name}")]
+    public async Task<ActionResult<ShipResponse>> GetByNameAsync([FromRoute] string name)
+    {
+        var ship = await _shipRepository.GetByNameAsync(name);
+
+        if (ship == null) return NotFound();
+        return Ok(ship.ToResponse());
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<int>> UpdateAsync([FromRoute] int id, [FromBody] ShipUpdateRequest shipRequest)
+    {
+        var result = await _shipRepository.UpdateAsync(id, shipRequest);
+
+        if (result == null) return BadRequest();
+        return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<int>> CreateAsync([FromBody] ShipCreateRequest shipRequest)
+    {
+        var result = await _shipRepository.CreateAsync(shipRequest);
+
+        if (result == null) return BadRequest();
+        return Ok(result);
     }
 }
