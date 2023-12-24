@@ -1,9 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Domain.Cargo.DTO;
 
 namespace Domain.Cargo.Interfaces;
 
 public interface ICargoRepository
 {
-    public Task<Entities.Cargo> GetCargoTypeByIdAsync(int id);
-    public Task<Entities.Cargo> GetCargoTypeByNameAsync(string name);
+    public Task<List<Entities.Cargo>> GetListAsync();
+    public Task<Entities.Cargo?> GetByIdAsync(int id);
+    public Task<int?> UpdateAsync(int id, CargoUpdateRequest cargo);
+    public Task<int?> CreateAsync(CargoCreateRequest cargo);
 }

@@ -1,4 +1,4 @@
-CREATE DATABASE maritime_cargo_transportation_db;;
+CREATE DATABASE maritime_cargo_transportation_db;
 
 \c maritime_cargo_transportation_db;
 
@@ -63,7 +63,6 @@ CREATE TABLE cargo_types
     name varchar(50) unique not null
 );
 
-
 CREATE TABLE cargoes
 (
     id            serial primary key,
@@ -82,7 +81,13 @@ CREATE TABLE containers
     id                serial primary key,
     container_ship_id int not null references container_ships (id),
     container_type_id int not null references container_types (id),
-    cargo_id          int not null references cargoes (id)
+);
+
+CREATE TABLE cargoes_to_containers
+(
+    id           serial primary key,
+    cargo_id     int not null references cargoes (id),
+    container_id int not null references containers (id)
 );
 
 -- seed
@@ -204,3 +209,13 @@ values ('General-purpose dry van'),
 
 INSERT INTO ships (name, company_id, flag_id, ship_type_id)
 values ('initial-ship', 1, 1, 1);
+
+INSERT INTO cargoes (cargo_type_id)
+values (1),
+       (2),
+       (3),
+       (4),
+       (5),
+       (6),
+       (7),
+       (8);
