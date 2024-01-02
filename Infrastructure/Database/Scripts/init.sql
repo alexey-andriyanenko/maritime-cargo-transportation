@@ -80,7 +80,7 @@ CREATE TABLE containers
 (
     id                serial primary key,
     container_ship_id int not null references container_ships (id),
-    container_type_id int not null references container_types (id),
+    container_type_id int not null references container_types (id)
 );
 
 CREATE TABLE cargoes_to_containers
@@ -219,3 +219,10 @@ values (1),
        (6),
        (7),
        (8);
+
+INSERT INTO container_ships (ship_id, size_id)
+VALUES (1, 2);
+INSERT INTO containers (container_type_id, container_ship_id)
+VALUES (1, 1),
+       (2, 1),
+       (3, 1);

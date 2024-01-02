@@ -1,5 +1,6 @@
 using Domain.Cargo.Interfaces;
 using Domain.Company.Interfaces;
+using Domain.Container.Interfaces;
 using Domain.Ship.Interfaces;
 using Domain.User.Interfaces;
 using Infrastructure.Database.Repositories;
@@ -23,6 +24,8 @@ public class Program
         builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
         builder.Services.AddScoped<IShipRepository, ShipRepository>();
         builder.Services.AddScoped<ICargoRepository, CargoRepository>();
+        builder.Services.AddScoped<IContainerShipRepository, ContainerShipRepository>();
+        builder.Services.AddScoped<IContainerRepository, ContainerRepository>();
 
         var app = builder.Build();
 
