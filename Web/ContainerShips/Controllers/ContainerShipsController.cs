@@ -1,6 +1,6 @@
-﻿using Domain.Ship.Entities;
-using Domain.Ship.Interfaces;
+﻿using Domain.Ship.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Web.ContainerShips.DTO;
 
 namespace Web.ContainerShips.Controllers;
 
@@ -15,9 +15,11 @@ public class ContainerShipsController : Controller
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<ContainerShip>>> GetListAsync()
+    public async Task<ActionResult<List<ContainerShipResponse>>> GetListAsync()
     {
-        var result = await _containerShipRepository.GetListAsync();
+        var ships = await _containerShipRepository.GetListAsync();
+        var result = ships.Select(s => s.ToResponse());
+
         return Ok(result);
     }
 }

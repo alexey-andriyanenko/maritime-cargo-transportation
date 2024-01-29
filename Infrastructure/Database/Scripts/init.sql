@@ -216,9 +216,10 @@ values (1),
        (3),
        (4),
        (5),
-       (6),
-       (7),
-       (8);
+       (6)
+    (7)
+    ,
+    (8);
 
 INSERT INTO container_ships (ship_id, size_id)
 VALUES (1, 2);
@@ -226,3 +227,8 @@ INSERT INTO containers (container_type_id, container_ship_id)
 VALUES (1, 1),
        (2, 1),
        (3, 1);
+
+INSERT INTO cargoes_to_containers (cargo_id, container_id)
+VALUES (1, 1),
+       (2, 2),
+       (3, 3);
