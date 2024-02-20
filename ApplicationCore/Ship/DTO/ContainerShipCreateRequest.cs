@@ -2,8 +2,7 @@
 
 namespace Domain.Ship.DTO;
 
-public class ContainerShipCreateRequest
+public class ContainerShipCreateRequest : ShipCreateRequest
 {
     public int SizeTypeId { get; set; }
-    public List<int> ContainersIds { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Ship.Interfaces;
+﻿using Domain.Ship.DTO;
+using Domain.Ship.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Web.ContainerShips.DTO;
 
@@ -21,5 +22,14 @@ public class ContainerShipsController : Controller
         var result = ships.Select(s => s.ToResponse());
 
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> CreateContainerShip([FromBody] ContainerShipCreateRequest shipRequest)
+    {
+        var result = await _containerShipRepository.CreateAsync(shipRequest);
+
+        if (result == null) return BadRequest();
+        return Ok();
     }
 }
