@@ -1,0 +1,17 @@
+﻿services:
+  web:
+    container_name: maritime-web
+    build: .
+    ports:
+      - "8080:8080"
+  db:
+    container_name: maritime-db
+    image: "postgres"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: maritime_cargo_transportation_db
+    volumes:
+      -  ./Infrastructure/Database/Scripts/docker_db_init.sql:/docker-entrypoint-initdb.d/docker_db_init.sql

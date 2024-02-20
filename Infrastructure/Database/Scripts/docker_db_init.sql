@@ -1,8 +1,4 @@
-CREATE DATABASE maritime_cargo_transportation_db;
-
-\c maritime_cargo_transportation_db;
-
-CREATE TABLE users
+﻿CREATE TABLE users
 (
     id         serial primary key,
     first_name varchar(50)        not null,
@@ -216,10 +212,9 @@ values (1),
        (3),
        (4),
        (5),
-       (6)
-    (7)
-    ,
-    (8);
+       (6),
+       (7),
+       (8);
 
 INSERT INTO container_ships (ship_id, size_id)
 VALUES (1, 2);

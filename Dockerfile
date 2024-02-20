@@ -10,4 +10,4 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /maritime-cargo-aspnet
 COPY --from=build-env /maritime-cargo-aspnet/out .
 EXPOSE 80
-ENTRYPOINT ["dotnet", "ApplicationCore.dll"]
+ENTRYPOINT ["dotnet", "Web.dll"]
