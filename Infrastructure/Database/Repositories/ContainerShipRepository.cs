@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Text;
+using Dapper;
 using Domain.Cargo.Entities;
 using Domain.Container.Entities;
 using Domain.Flag.Entities;
@@ -78,6 +79,23 @@ public class ContainerShipRepository : IContainerShipRepository
                 "INSERT INTO container_ships (ship_id, size_id) VALUES (@ShipId, @SizeTypeId) RETURNING id";
             return await _dbConnection.ExecuteScalarAsync<int>(createContainerShipSql,
                 new { ShipId = id, ship.SizeTypeId });
+        }
+    }
+
+    public async Task<int?> AppendContainersAsync(int containerShipId, int[] containers)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            _dbConnection.Open();
+
+            var sqlString = new StringBuilder();
+
+            foreach (var containerId in containers)
+                sqlString.Append(
+                    $"UPDATE containers SET container_ship_id = '{containerShipId}' WHERE id = '{containerId}';");
+
+            var result = await _dbConnection.ExecuteAsync(sqlString.ToString());
+            return result;
         }
     }
 }

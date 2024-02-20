@@ -32,4 +32,14 @@ public class ContainerShipsController : Controller
         if (result == null) return BadRequest();
         return Ok();
     }
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> AppendContainerToContainerShip([FromRoute] int id,
+        [FromQuery] int[] containers)
+    {
+        var result = await _containerShipRepository.AppendContainersAsync(id, containers);
+
+        if (result == null) return BadRequest();
+        return Ok();
+    }
 }
