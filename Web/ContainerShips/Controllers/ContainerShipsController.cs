@@ -1,10 +1,12 @@
 ﻿using Domain.Ship.DTO;
 using Domain.Ship.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.ContainerShips.DTO;
 
 namespace Web.ContainerShips.Controllers;
 
+[Authorize]
 [Route("/container-ships")]
 public class ContainerShipsController : Controller
 {

@@ -1,10 +1,12 @@
 ﻿using Domain.User.DTO;
 using Domain.User.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Users.DTO;
 
 namespace Web.Controllers;
 
+[Authorize]
 [Route("/users")]
 public class UsersController : Controller
 {

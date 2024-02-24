@@ -51,7 +51,7 @@ public class UserRepository : IUserRepository
             _dbConnection.Open();
 
             var sql =
-                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE email = @Email";
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email, users.password Password FROM users WHERE email = @Email";
 
             return await _dbConnection.QueryFirstOrDefaultAsync<User>(sql,
                 new { Email = email });
@@ -65,7 +65,7 @@ public class UserRepository : IUserRepository
             _dbConnection.Open();
 
             var sql =
-                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email FROM users WHERE id = @Id";
+                "SELECT users.id Id, users.first_name FirstName, users.last_name LastName, users.email Email, users.password Password FROM users WHERE id = @Id";
 
             return await _dbConnection.QueryFirstOrDefaultAsync<User>(
                 sql,

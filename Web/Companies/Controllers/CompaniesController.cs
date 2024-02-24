@@ -1,10 +1,12 @@
 ﻿using Domain.Company.DTO;
 using Domain.Company.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Companies.DTO;
 
 namespace Web.Controllers;
 
+[Authorize]
 [Route("/companies")]
 public class CompaniesController : Controller
 {
@@ -15,28 +17,28 @@ public class CompaniesController : Controller
         _companyRepository = companyRepository;
     }
 
+
     [HttpGet]
     public async Task<ActionResult<List<CompanyResponse>>> GetListAsync()
     {
-        var companies = await _companyRepository.GetListAsync();
+        var userId = HttpContext.Session.GetInt32("user_id");
+        if (userId == null) return BadRequest();
+
+        Console.WriteLine($"COMPANY_ID {HttpContext.Session.GetInt32("company_id")}");
+
+        var companies = await _companyRepository.GetListAsync(userId ?? 0);
         var result = companies.Select(company => company.ToResponse());
 
         return Ok(result);
     }
 
-    [HttpGet("id/{id:int}")]
-    public async Task<ActionResult<CompanyResponse>> GetByIdAsync([FromRoute] int id)
+    [HttpGet("{companyId:int}")]
+    public async Task<ActionResult<CompanyResponse>> GetByIdAsync([FromRoute] int companyId)
     {
-        var company = await _companyRepository.GetByIdAsync(id);
+        var userId = HttpContext.Session.GetInt32("user_id");
+        if (userId == null) return BadRequest();
 
-        if (company == null) return NotFound();
-        return Ok(company.ToResponse());
-    }
-
-    [HttpGet("name/{name}")]
-    public async Task<ActionResult<CompanyResponse>> GetByNameAsync([FromRoute] string name)
-    {
-        var company = await _companyRepository.GetByNameAsync(name);
+        var company = await _companyRepository.GetByIdAsync(userId ?? 0, companyId);
 
         if (company == null) return NotFound();
         return Ok(company.ToResponse());

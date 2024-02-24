@@ -1,10 +1,12 @@
 ﻿using Domain.Cargo.DTO;
 using Domain.Cargo.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Cargoes.DTO;
 
 namespace Web.Cargoes.Controllers;
 
+[Authorize]
 [Route("/cargoes")]
 public class CargoesController : Controller
 {

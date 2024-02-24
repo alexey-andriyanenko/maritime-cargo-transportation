@@ -1,10 +1,12 @@
 ﻿using Domain.Ship.DTO;
 using Domain.Ship.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Ships.DTO;
 
 namespace Web.Controllers;
 
+[Authorize]
 [Route("/ships")]
 public class ShipsController : Controller
 {
@@ -18,7 +20,8 @@ public class ShipsController : Controller
     [HttpGet]
     public async Task<ActionResult<List<ShipResponse>>> GetListAsync()
     {
-        var ships = await _shipRepository.GetListAsync();
+        var companyId = HttpContext.Session.GetInt32("company_id") ?? 0;
+        var ships = await _shipRepository.GetListAsync(companyId);
         var result = ships.Select(ship => ship.ToResponse());
         return Ok(result);
     }

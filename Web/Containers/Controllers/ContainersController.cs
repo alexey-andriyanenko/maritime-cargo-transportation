@@ -1,10 +1,12 @@
 ﻿using Domain.Container.DTO;
 using Domain.Container.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Containers.DTO;
 
 namespace Web.Containers.Controllers;
 
+[Authorize]
 [Route("/containers")]
 public class ContainersController : Controller
 {

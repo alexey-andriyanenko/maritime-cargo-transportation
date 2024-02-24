@@ -13,12 +13,12 @@ public class ShipRepository : IShipRepository
 {
     private readonly string _connectionString = DatabaseHelpers.GetConnectionString();
 
-    public async Task<List<Ship>> GetListAsync()
+    public async Task<List<Ship>> GetListAsync(int companyId)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql =
-                "SELECT ships.id Id, ships.name Name, flags.id Id, flags.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN flags ON ships.flag_id = flags.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id";
+                "SELECT ships.id Id, ships.name Name, flags.id Id, flags.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN flags ON ships.flag_id = flags.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE companies.id = @CompanyId";
 
             var result = await _dbConnection.QueryAsync<Ship, Flag, ShipType, Company, Ship>(sql,
                 (ship, flag, shipType, company) =>
@@ -28,7 +28,7 @@ public class ShipRepository : IShipRepository
                     ship.Company = company;
 
                     return ship;
-                }, splitOn: "id");
+                }, splitOn: "id", param: new { CompanyId = companyId });
 
             return result.ToList();
         }

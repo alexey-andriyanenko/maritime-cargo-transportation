@@ -157,7 +157,16 @@ values (1, 1),
        (9, 26);
 
 INSERT INTO flags (name)
-values ('BERMUDA');
+values ('Japan'),
+       ('Greece'),
+       ('China'),
+       ('Singapore'),
+       ('Norway'),
+       ('South Korea'),
+       ('USA'),
+       ('Germany'),
+       ('UK'),
+       ('Denmark');
 
 INSERT INTO ship_types (name)
 values ('Container ship'),
@@ -204,7 +213,13 @@ values ('General-purpose dry van'),
        ('Trash container');
 
 INSERT INTO ships (name, company_id, flag_id, ship_type_id)
-values ('initial-ship', 1, 1, 1);
+values ('Floriston', 1, 1, 1),
+       ('Hampton Court', 1, 2, 1),
+       ('Musquito', 1, 3, 1),
+       ('The Oryx', 2, 4, 1),
+       ('The Godetia', 2, 4, 1),
+       ('Northrepps', 3, 5, 1),
+       ('The Kempthorne', 4, 6, 1);
 
 INSERT INTO cargoes (cargo_type_id)
 values (1),

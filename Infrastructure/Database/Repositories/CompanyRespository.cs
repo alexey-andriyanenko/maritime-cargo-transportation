@@ -10,32 +10,27 @@ public class CompanyRepository : ICompanyRepository
 {
     private readonly string _connectionString = DatabaseHelpers.GetConnectionString();
 
-    public async Task<List<Company>> GetListAsync()
+    public async Task<List<Company>> GetListAsync(int userId)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql = "SELECT companies.id Id, companies.name Name FROM companies";
-            var result = await _dbConnection.QueryAsync<Company>(sql);
+            var sql =
+                "SELECT companies.id Id, companies.name Name FROM companies JOIN users_to_companies ON users_to_companies.user_id = @UserId AND users_to_companies.company_id = companies.id";
+            var result = await _dbConnection.QueryAsync<Company>(sql, new { UserId = userId });
 
             return result.ToList();
         }
     }
 
-    public async Task<Company?> GetByIdAsync(int id)
+    public async Task<Company?> GetByIdAsync(int userId, int companyId)
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
-        {
-            var sql = "SELECT companies.id Id, companies.name Name FROM companies WHERE id=@Id";
-            return await _dbConnection.QueryFirstOrDefaultAsync<Company>(sql, new { Id = id });
-        }
-    }
 
-    public async Task<Company?> GetByNameAsync(string name)
-    {
-        using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql = "SELECT companies.id Id, companies.name Name FROM companies WHERE name=@Name";
-            return await _dbConnection.QueryFirstOrDefaultAsync<Company>(sql, new { Name = name });
+            var sql =
+                "SELECT companies.id Id, companies.name Name FROM companies JOIN users_to_companies ON users_to_companies.user_id = @UserId AND users_to_companies.company_id = @CompanyId AND companies.id = @CompanyId";
+            return await _dbConnection.QueryFirstOrDefaultAsync<Company>(sql,
+                new { UserId = userId, CompanyId = companyId });
         }
     }
 
