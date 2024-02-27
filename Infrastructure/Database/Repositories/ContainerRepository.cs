@@ -1,4 +1,5 @@
-﻿using Dapper;
+﻿using System.Text;
+using Dapper;
 using Domain.Container.DTO;
 using Domain.Container.Entities;
 using Domain.Container.Interfaces;
@@ -65,6 +66,40 @@ public class ContainerRepository : IContainerRepository
                 "INSERT INTO containers (container_ship_id, container_type_id) values (@ContainerShipId, @ContainerTypeId) RETURNING id";
             var result = await _dbConnection.ExecuteAsync(sql, container);
 
+            return result;
+        }
+    }
+
+    public async Task<int?> AttachToContainerShip(int containerShipId, int[] containersIds)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            _dbConnection.Open();
+
+            var sqlString = new StringBuilder();
+
+            foreach (var containerId in containersIds)
+                sqlString.Append(
+                    $"UPDATE containers SET container_ship_id = '{containerShipId}' WHERE id = '{containerId}';");
+
+            var result = await _dbConnection.ExecuteAsync(sqlString.ToString());
+            return result;
+        }
+    }
+
+    public async Task<int?> DetachFromContainerShip(int[] containersIds)
+    {
+        using (var _dbConnection = new NpgsqlConnection(_connectionString))
+        {
+            _dbConnection.Open();
+
+            var sqlString = new StringBuilder();
+
+            foreach (var containerId in containersIds)
+                sqlString.Append(
+                    $"UPDATE containers SET container_ship_id = NULL WHERE id = '{containerId}';");
+
+            var result = await _dbConnection.ExecuteAsync(sqlString.ToString());
             return result;
         }
     }

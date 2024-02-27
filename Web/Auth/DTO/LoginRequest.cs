@@ -1,6 +1,6 @@
 ﻿namespace Web.Auth.DTO;
 
-public class SignInRequest
+public class LoginRequest
 {
     public string Email { get; set; }
     public string Password { get; set; }

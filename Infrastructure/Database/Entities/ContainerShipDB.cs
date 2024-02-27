@@ -2,8 +2,8 @@
 
 public class ContainerShipDB
 {
-    public int Id { get; set; }
     public int ShipId { get; set; }
+    public int ContainerShipid { get; set; }
     public string ShipName { get; set; }
     public int FlagId { get; set; }
     public string FlagName { get; set; }

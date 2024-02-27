@@ -53,4 +53,23 @@ public class ContainersController : Controller
         if (result == null) return BadRequest();
         return Ok(result);
     }
+
+    [HttpPatch("attach/{containerShipId:int}")]
+    public async Task<ActionResult> AttachToContainerShip([FromRoute] int containerShipId,
+        [FromQuery] int[] containersIds)
+    {
+        var result = await _containerRepository.AttachToContainerShip(containerShipId, containersIds);
+
+        if (result == null) return BadRequest();
+        return Ok();
+    }
+
+    [HttpPatch("detach")]
+    public async Task<ActionResult> DetachFromContainerShip([FromQuery] int[] containerIds)
+    {
+        var result = await _containerRepository.DetachFromContainerShip(containerIds);
+
+        if (result == null) return BadRequest();
+        return Ok();
+    }
 }

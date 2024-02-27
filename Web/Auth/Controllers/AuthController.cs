@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Auth.DTO;
+using Web.Companies.DTO;
+using Web.Users.DTO;
 
 namespace Web.Auth.Controllers;
 
@@ -22,8 +24,9 @@ public class AuthController : Controller
         _companyService = companyService;
     }
 
-    [HttpPost("sign-in")]
-    public async Task<ActionResult> SignInAsync([FromBody] SignInRequest request)
+
+    [HttpPost("login")]
+    public async Task<ActionResult> LoginAsync([FromBody] LoginRequest request)
     {
         var user = await _userService.GetByEmailAsync(request.Email);
 
@@ -31,14 +34,26 @@ public class AuthController : Controller
         if (user.Password != request.Password) return Forbid();
 
         await _authService.Authenticate(user);
+        HttpContext.Session.SetInt32("user_id", user.Id);
 
         return Ok();
     }
 
-    [HttpPost("sign-in/company/{companyId:int}")]
-    public async Task<ActionResult> SelectCompany([FromRoute] int companyId)
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<ActionResult> LogoutAsync()
     {
-        var company = await _companyService.GetByIdAsync(companyId);
+        await HttpContext.SignOutAsync();
+        HttpContext.Session.Clear();
+
+        return Ok();
+    }
+
+    [Authorize]
+    [HttpPost("session")]
+    public async Task<ActionResult> FulfillSessionAsync([FromBody] SessionRequest request)
+    {
+        var company = await _companyService.GetByIdAsync(request.CompanyId);
         if (company == null) return BadRequest();
 
         HttpContext.Session.SetInt32("company_id", company.Id);
@@ -47,10 +62,20 @@ public class AuthController : Controller
     }
 
     [Authorize]
-    [HttpPost("sign-out")]
-    public async Task<ActionResult> SignOutAsync()
+    [HttpGet("session")]
+    public async Task<ActionResult> GetSessionAsync()
     {
-        await HttpContext.SignOutAsync();
-        return Ok();
+        var user = await _userService.GetByIdAsync(HttpContext.Session.GetInt32("user_id") ?? 0);
+        if (user == null) return await LogoutAsync();
+
+        var company = await _companyService.GetByIdAsync(HttpContext.Session.GetInt32("company_id") ?? 0);
+
+        var response = new SessionResponse
+        {
+            User = user.ToResponse(),
+            Company = company?.ToResponse()
+        };
+
+        return Ok(response);
     }
 }

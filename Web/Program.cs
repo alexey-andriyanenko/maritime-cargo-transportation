@@ -31,12 +31,27 @@ public class Program
                     return Task.CompletedTask;
                 };
             });
+        builder.Services.AddAuthorization();
         builder.Services.AddDistributedMemoryCache();
         builder.Services.AddSession(options => { options.IdleTimeout = TimeSpan.FromMinutes(20); });
 
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(
+                "Local",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:9000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                }
+            );
+        });
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddScoped<IAuthService, AuthService>();
@@ -62,6 +77,8 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.UseSession();
+
+        app.UseCors("Local");
 
         app.MapControllers();
 

@@ -25,6 +25,5 @@ public class AuthService : IAuthService
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
         await _httpContextAccessor.HttpContext.SignInAsync(new ClaimsPrincipal(identity));
-        _httpContextAccessor.HttpContext.Session.SetInt32("user_id", user.Id);
     }
 }

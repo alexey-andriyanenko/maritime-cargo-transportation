@@ -8,7 +8,8 @@ public static class ContainerShipDTOExtensions
     {
         return new ContainerShipResponse
         {
-            Id = model.Id,
+            ShipId = model.Id,
+            ContainerShipId = model.ContainerShipId,
             Type = model.Type,
             Flag = model.Flag,
             SizeType = model.SizeType,

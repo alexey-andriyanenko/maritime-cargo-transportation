@@ -10,4 +10,6 @@ public interface IContainerRepository
     public Task<Entities.Container?> GetByIdAsync(int id);
     public Task<int?> UpdateAsync(int id, ContainerUpdateRequest container);
     public Task<int?> CreateAsync(ContainerCreateRequest container);
+    public Task<int?> AttachToContainerShip(int shipId, int[] containersIds);
+    public Task<int?> DetachFromContainerShip(int[] containerIds);
 }

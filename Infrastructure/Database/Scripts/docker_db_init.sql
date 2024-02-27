@@ -75,7 +75,7 @@ CREATE TABLE container_ships
 CREATE TABLE containers
 (
     id                serial primary key,
-    container_ship_id int not null references container_ships (id),
+    container_ship_id int references container_ships (id),
     container_type_id int not null references container_types (id)
 );
 
@@ -89,7 +89,7 @@ CREATE TABLE cargoes_to_containers
 -- seed
 
 insert into users (first_name, last_name, email, password)
-values ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ'),
+values ('Root', 'User', 'admin@example.com', 'root'),
        ('Ronny', 'Wishart', 'rwishart1@state.tx.us', 'sY3*<SP(meGE'),
        ('Rhody', 'Mardling', 'rmardling2@purevolume.com', 'mC6_%?(y'),
        ('Beaufort', 'Emmett', 'bemmett3@360.cn', 'fF2(|AHqvu''%oK'),
@@ -98,7 +98,8 @@ values ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ')
        ('Brock', 'Sayers', 'bsayers6@unc.edu', 'mU3~Iv)KNq@jxLLF'),
        ('Hillyer', 'Kale', 'hkale7@utexas.edu', 'lU0&G_BvYc7"E'),
        ('Langston', 'Brewitt', 'lbrewitt8@census.gov', 'uV2@"jX''A'),
-       ('Dulce', 'Edyson', 'dedyson9@mysql.com', 'yZ0=)mC@g<kWW');
+       ('Dulce', 'Edyson', 'dedyson9@mysql.com', 'yZ0=)mC@g<kWW'),
+       ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ');
 
 insert into companies (name)
 values ('JumpXS'),
@@ -232,7 +233,11 @@ values (1),
        (8);
 
 INSERT INTO container_ships (ship_id, size_id)
-VALUES (1, 2);
+VALUES (1, 2),
+       (2, 3),
+       (3, 4);
+
+
 INSERT INTO containers (container_type_id, container_ship_id)
 VALUES (1, 1),
        (2, 1),

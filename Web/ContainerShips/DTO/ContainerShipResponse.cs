@@ -5,7 +5,8 @@ namespace Web.ContainerShips.DTO;
 
 public class ContainerShipResponse
 {
-    public int Id { get; set; }
+    public int ShipId { get; set; }
+    public int ContainerShipId { get; set; }
     public string Name { get; set; }
     public Flag Flag { get; set; }
     public ShipType Type { get; set; }
