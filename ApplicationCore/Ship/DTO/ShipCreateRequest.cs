@@ -3,7 +3,7 @@
 public class ShipCreateRequest
 {
     public string Name { get; set; }
-    public int FlagId { get; set; }
+    public int CountryId { get; set; }
     public int ShipTypeId { get; set; }
     public int CompanyId { get; set; }
 }

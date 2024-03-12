@@ -1,6 +1,6 @@
 ﻿using Dapper;
 using Domain.Company.Entities;
-using Domain.Flag.Entities;
+using Domain.Country.Entities;
 using Domain.Ship.DTO;
 using Domain.Ship.Entities;
 using Domain.Ship.Interfaces;
@@ -18,12 +18,12 @@ public class ShipRepository : IShipRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql =
-                "SELECT ships.id Id, ships.name Name, flags.id Id, flags.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN flags ON ships.flag_id = flags.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE companies.id = @CompanyId";
+                "SELECT ships.id Id, ships.name Name, countries.id Id, countries.name Name, countries.country_code CountryCode, countries.code Code, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN countries ON ships.country_id = countries.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE companies.id = @CompanyId";
 
-            var result = await _dbConnection.QueryAsync<Ship, Flag, ShipType, Company, Ship>(sql,
+            var result = await _dbConnection.QueryAsync<Ship, Country, ShipType, Company, Ship>(sql,
                 (ship, flag, shipType, company) =>
                 {
-                    ship.Flag = flag;
+                    ship.Country = flag;
                     ship.Type = shipType;
                     ship.Company = company;
 
@@ -39,13 +39,13 @@ public class ShipRepository : IShipRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql =
-                "SELECT ships.id Id, ships.name Name, flags.id Id, flags.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN flags ON ships.flag_id = flags.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE ships.id = @Id";
+                "SELECT ships.id Id, ships.name Name, countries.id Id, countries.name Name, countries.country_code CountryCode, countries.code Code, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN countries ON ships.country_id = countries.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE ships.id = @Id";
 
             var result =
-                await _dbConnection.QueryAsync<Ship, Flag, ShipType, Company, Ship>(sql,
-                    (ship, flag, shipType, company) =>
+                await _dbConnection.QueryAsync<Ship, Country, ShipType, Company, Ship>(sql,
+                    (ship, country, shipType, company) =>
                     {
-                        ship.Flag = flag;
+                        ship.Country = country;
                         ship.Type = shipType;
                         ship.Company = company;
 
@@ -62,13 +62,13 @@ public class ShipRepository : IShipRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql =
-                "SELECT ships.id Id, ships.name Name, flags.id Id, flags.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN flags ON ships.flag_id = flags.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE ships.name = @Name";
+                "SELECT ships.id Id, ships.name Name, countries.id Id, countries.name Name, ship_types.id Id, ship_types.name Name, companies.id Id, companies.name Name FROM ships JOIN countries ON ships.country_id = countries.id JOIN ship_types ON ships.ship_type_id = ship_types.id JOIN companies ON ships.company_id = companies.id WHERE ships.name = @Name";
 
             var result =
-                await _dbConnection.QueryAsync<Ship, Flag, ShipType, Company, Ship>(sql,
-                    (ship, flag, shipType, company) =>
+                await _dbConnection.QueryAsync<Ship, Country, ShipType, Company, Ship>(sql,
+                    (ship, country, shipType, company) =>
                     {
-                        ship.Flag = flag;
+                        ship.Country = country;
                         ship.Type = shipType;
                         ship.Company = company;
 
@@ -84,8 +84,8 @@ public class ShipRepository : IShipRepository
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql = "UPDATE ships SET name = @Name, flag_id = @FlagId WHERE id = @Id";
-            return await _dbConnection.ExecuteAsync(sql, new { Id = id, ship.Name, ship.FlagId });
+            var sql = "UPDATE ships SET name = @Name, country_id = @CountryId WHERE id = @Id";
+            return await _dbConnection.ExecuteAsync(sql, new { Id = id, ship.Name, ship });
         }
     }
 
@@ -94,7 +94,7 @@ public class ShipRepository : IShipRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             var sql =
-                "INSERT INTO ships (name, flag_id, ship_type_id, company_id) VALUES (@Name, @FlagId, @ShipTypeId, @CompanyId) RETURNING id";
+                "INSERT INTO ships (name, country_id, ship_type_id, company_id) VALUES (@Name, @CountryId, @ShipTypeId, @CompanyId) RETURNING id";
             return await _dbConnection.ExecuteAsync(sql, ship);
         }
     }

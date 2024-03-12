@@ -8,5 +8,6 @@ namespace Domain.Ship.Interfaces;
 public interface IContainerShipRepository
 {
     public Task<List<ContainerShip>> GetListAsync();
+    public Task<ContainerShip> GetByIdAsync(int id);
     public Task<int?> CreateAsync(ContainerShipCreateRequest ship);
 }

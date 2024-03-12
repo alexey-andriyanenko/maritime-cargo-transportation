@@ -8,6 +8,7 @@ using Domain.User.Interfaces;
 using Infrastructure.Database.Repositories;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.FileProviders;
 using Web.Auth.Services;
 using Web.Companies.Services;
 using Web.Users.Services;
@@ -79,6 +80,8 @@ public class Program
         app.UseSession();
 
         app.UseCors("Local");
+        
+        app.UseStaticFiles();
 
         app.MapControllers();
 

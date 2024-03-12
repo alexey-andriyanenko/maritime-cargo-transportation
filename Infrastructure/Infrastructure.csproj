@@ -15,4 +15,12 @@
         <PackageReference Include="Npgsql" Version="8.0.1"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Database\Scripts\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Database\Scripts\docker_db_init.sql" />
+    </ItemGroup>
+
 </Project>

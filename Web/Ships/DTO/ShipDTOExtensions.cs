@@ -1,16 +1,17 @@
 ﻿using Domain.Ship.Entities;
+using Web.Countries.DTO;
 
 namespace Web.Ships.DTO;
 
 public static class ShipDTOExtensions
 {
-    public static ShipResponse ToResponse(this Ship ship)
+    public static ShipResponse ToResponse(this Ship ship, string host)
     {
         return new ShipResponse
         {
             Id = ship.Id,
             Name = ship.Name,
-            Flag = ship.Flag,
+            Country = ship.Country.ToResponse(host),
             Type = ship.Type,
             CompanyId = ship.Company.Id
         };

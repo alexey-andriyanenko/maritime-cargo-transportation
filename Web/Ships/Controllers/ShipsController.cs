@@ -1,8 +1,10 @@
 ﻿using Domain.Ship.DTO;
+using Domain.Ship.Enums;
 using Domain.Ship.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Ships.DTO;
+using Web.ContainerShips.DTO;
 
 namespace Web.Controllers;
 
@@ -22,7 +24,8 @@ public class ShipsController : Controller
     {
         var companyId = HttpContext.Session.GetInt32("company_id") ?? 0;
         var ships = await _shipRepository.GetListAsync(companyId);
-        var result = ships.Select(ship => ship.ToResponse());
+        var result = ships.Select(ship => ship.ToResponse(Request.Host.ToString()));
+        
         return Ok(result);
     }
 
@@ -32,16 +35,30 @@ public class ShipsController : Controller
         var ship = await _shipRepository.GetByIdAsync(id);
 
         if (ship == null) return NotFound();
-        return Ok(ship.ToResponse());
+        return Ok(ship.ToResponse(Request.Host.ToString()));
     }
 
+    [HttpGet("details/{id:int}")]
+    public async Task<ActionResult> GetDetailsAsync([FromRoute] int id)
+    {
+        var ship = await _shipRepository.GetByIdAsync(id);
+        if (ship == null) return NotFound();
+  
+        if (ship.Type.Id == (int)ShipTypesEnum.ContainerShip)
+        {
+            return Redirect($"/container-ships/{id}");
+        }
+
+        return NotFound();
+    }
+    
     [HttpGet("name/{name}")]
     public async Task<ActionResult<ShipResponse>> GetByNameAsync([FromRoute] string name)
     {
         var ship = await _shipRepository.GetByNameAsync(name);
 
         if (ship == null) return NotFound();
-        return Ok(ship.ToResponse());
+        return Ok(ship.ToResponse(Request.Host.ToString()));
     }
 
     [HttpPut("{id:int}")]

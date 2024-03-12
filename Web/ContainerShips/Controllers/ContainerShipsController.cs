@@ -25,6 +25,15 @@ public class ContainerShipsController : Controller
 
         return Ok(result);
     }
+    
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<ContainerShipResponse>> GetByIdAsync([FromRoute] int id)
+    {
+        var ship = await _containerShipRepository.GetByIdAsync(id);
+
+        if (ship == null) return NotFound();
+        return Ok(ship.ToResponse());
+    }
 
     [HttpPost]
     public async Task<ActionResult> CreateContainerShip([FromBody] ContainerShipCreateRequest shipRequest)
