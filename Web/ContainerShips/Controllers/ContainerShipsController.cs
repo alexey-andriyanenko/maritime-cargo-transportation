@@ -21,7 +21,7 @@ public class ContainerShipsController : Controller
     public async Task<ActionResult<List<ContainerShipResponse>>> GetListAsync()
     {
         var ships = await _containerShipRepository.GetListAsync();
-        var result = ships.Select(s => s.ToResponse());
+        var result = ships.Select(s => s.ToResponse(Request.Host.ToString()));
 
         return Ok(result);
     }
@@ -32,7 +32,7 @@ public class ContainerShipsController : Controller
         var ship = await _containerShipRepository.GetByIdAsync(id);
 
         if (ship == null) return NotFound();
-        return Ok(ship.ToResponse());
+        return Ok(ship.ToResponse(Request.Host.ToString()));
     }
 
     [HttpPost]
