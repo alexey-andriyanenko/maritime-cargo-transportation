@@ -16,10 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Database\Scripts\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <None Remove="Database\Scripts\docker_db_init.sql" />
     </ItemGroup>
 

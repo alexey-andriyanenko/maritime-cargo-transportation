@@ -3,8 +3,8 @@ using Web.Users.DTO;
 
 namespace Web.Auth.DTO;
 
-public class SessionResponse
+public record SessionResponse
 {
-    public UserResponse User { get; set; }
-    public CompanyResponse? Company { get; set; }
+    public UserResponse User { get; init; }
+    public CompanyResponse? Company { get; init; }
 }

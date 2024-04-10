@@ -1,7 +1,9 @@
-﻿using Dapper;
+﻿using System.Data;
+using Dapper;
 using Domain.Cargo.DTO;
 using Domain.Cargo.Entities;
 using Domain.Cargo.Interfaces;
+using Infrastructure.Database.Entities;
 using Npgsql;
 
 namespace Infrastructure.Database.Repositories;
@@ -15,16 +17,11 @@ public class CargoRepository : ICargoRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             _dbConnection.Open();
+            var result = await _dbConnection.QueryAsync<CargoDb>(
+                "SELECT * FROM get_cargoes_list();"
+            );
 
-            var sql =
-                "SELECT cargoes.id Id, cargo_types.id Id, cargo_types.name Name from cargoes JOIN cargo_types ON cargoes.cargo_type_id = cargo_types.id";
-            var result = await _dbConnection.QueryAsync<Cargo, CargoType, Cargo>(sql, (cargo, cargoType) =>
-            {
-                cargo.Type = cargoType;
-                return cargo;
-            }, splitOn: "Id");
-
-            return result.ToList();
+            return result.Select(c => c.ToDomain()).ToList();
         }
     }
 
@@ -34,15 +31,12 @@ public class CargoRepository : ICargoRepository
         {
             _dbConnection.Open();
 
-            var sql =
-                "SELECT cargoes.id Id, cargo_types.id Id, cargo_types.name Name from cargoes JOIN cargo_types ON cargoes.cargo_type_id = cargo_types.id WHERE cargoes.id = @Id";
-            var result = await _dbConnection.QueryAsync<Cargo, CargoType, Cargo>(sql, (cargo, cargoType) =>
-            {
-                cargo.Type = cargoType;
-                return cargo;
-            }, new { Id = id }, splitOn: "Id");
+            var result = await _dbConnection.QueryAsync<CargoDb>(
+                "SELECT * FROM get_cargo_by_id(@Id);",
+                new { Id = id }
+            );
 
-            return result.FirstOrDefault();
+            return result.First()?.ToDomain();
         }
     }
 
@@ -51,10 +45,10 @@ public class CargoRepository : ICargoRepository
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
             _dbConnection.Open();
-
-            var sql =
-                "UPDATE cargoes SET cargo_type_id = @CargoTypeId WHERE cargoes.id = @Id";
-            return await _dbConnection.ExecuteAsync(sql, new { Id = id, cargo.CargoTypeId });
+            return await _dbConnection.ExecuteAsync(
+                "SELECT update_cargo(@Id, @CargoTypeId);",
+                new { Id = id, cargo.CargoTypeId }
+            );
         }
     }
 
@@ -64,9 +58,7 @@ public class CargoRepository : ICargoRepository
         {
             _dbConnection.Open();
 
-            var sql =
-                "INSERT INTO cargoes (cargo_type_id) values (@CargoTypeId) RETURNING id";
-            return await _dbConnection.ExecuteAsync(sql, cargo);
+            return await _dbConnection.ExecuteAsync("SELECT create_cargo(@CargoTypeId);", cargo);
         }
     }
 }

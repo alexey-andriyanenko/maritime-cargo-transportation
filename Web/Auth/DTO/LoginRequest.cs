@@ -1,7 +1,7 @@
 ﻿namespace Web.Auth.DTO;
 
-public class LoginRequest
+public record LoginRequest
 {
-    public string Email { get; set; }
-    public string Password { get; set; }
+    public string Email { get; init; }
+    public string Password { get; init; }
 }

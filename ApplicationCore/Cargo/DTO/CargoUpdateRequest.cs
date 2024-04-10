@@ -1,6 +1,6 @@
 ﻿namespace Domain.Cargo.DTO;
 
-public class CargoUpdateRequest
+public record CargoUpdateRequest
 {
-    public int CargoTypeId { get; set; }
+    public int CargoTypeId { get; init; }
 }

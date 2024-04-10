@@ -12,7 +12,7 @@ dotnet watch --project Web/Web.csproj
 
 Run PostgreSQL container
 ```bash
-docker run --rm -p 5432:5432 --name maritime-db -e POSTGRES_PASSWORD=root -e POSTGRES_USER=postgres -e POSTGRES_DB=maritime postgres
+docker run --rm -p 5432:5432 --name maritime-db -e POSTGRES_PASSWORD=root -e POSTGRES_USER=postgres -e POSTGRES_DB=maritime_cargo_transportation_db postgres
 ```
 
 Connect to PostgreSQL container | need to create maritime_cargo_transportation_db and seed it with data.

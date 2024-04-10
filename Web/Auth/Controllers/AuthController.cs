@@ -17,21 +17,26 @@ public class AuthController : Controller
     private readonly ICompanyService _companyService;
     private readonly IUserService _userService;
 
-    public AuthController(IAuthService authService, IUserService userService, ICompanyService companyService)
+    public AuthController(
+        IAuthService authService,
+        IUserService userService,
+        ICompanyService companyService
+    )
     {
         _authService = authService;
         _userService = userService;
         _companyService = companyService;
     }
 
-
     [HttpPost("login")]
     public async Task<ActionResult> LoginAsync([FromBody] LoginRequest request)
     {
         var user = await _userService.GetByEmailAsync(request.Email);
 
-        if (user == null) return BadRequest();
-        if (user.Password != request.Password) return Forbid();
+        if (user == null)
+            return BadRequest();
+        if (user.Password != request.Password)
+            return Forbid();
 
         await _authService.Authenticate(user);
         HttpContext.Session.SetInt32("user_id", user.Id);
@@ -54,7 +59,8 @@ public class AuthController : Controller
     public async Task<ActionResult> FulfillSessionAsync([FromBody] SessionRequest request)
     {
         var company = await _companyService.GetByIdAsync(request.CompanyId);
-        if (company == null) return BadRequest();
+        if (company == null)
+            return BadRequest();
 
         HttpContext.Session.SetInt32("company_id", company.Id);
 
@@ -66,9 +72,12 @@ public class AuthController : Controller
     public async Task<ActionResult> GetSessionAsync()
     {
         var user = await _userService.GetByIdAsync(HttpContext.Session.GetInt32("user_id") ?? 0);
-        if (user == null) return await LogoutAsync();
+        if (user == null)
+            return await LogoutAsync();
 
-        var company = await _companyService.GetByIdAsync(HttpContext.Session.GetInt32("company_id") ?? 0);
+        var company = await _companyService.GetByIdAsync(
+            HttpContext.Session.GetInt32("company_id") ?? 0
+        );
 
         var response = new SessionResponse
         {

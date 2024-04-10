@@ -1,6 +1,6 @@
 ﻿namespace Web.Auth.DTO;
 
-public class SessionRequest
+public record SessionRequest
 {
-    public int CompanyId { get; set; }
+    public int CompanyId { get; init; }
 }

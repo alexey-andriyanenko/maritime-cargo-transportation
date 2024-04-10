@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Text;
 using Dapper;
 using Domain.Container.DTO;
 using Domain.Container.Entities;
@@ -19,14 +20,10 @@ public class ContainerRepository : IContainerRepository
         {
             _dbConnection.Open();
 
-            var sql =
-                "SELECT containers.id ContainerId, containers.container_ship_id ContainerShipId, container_types.id ContainerTypeId, container_types.name ContainerTypeName, cargoes.id CargoId, cargo_types.id CargoTypeId, cargo_types.name CargoTypeName FROM containers JOIN container_types ON containers.container_type_id = container_types.id JOIN cargoes_to_containers ON containers.id = cargoes_to_containers.container_id JOIN cargoes ON  cargoes_to_containers.cargo_id = cargoes.id JOIN cargo_types ON cargoes.cargo_type_id = cargo_types.id";
-
-            var result =
-                await _dbConnection
-                    .QueryAsync<ContainerDB>(sql);
-            var containers = result.ToList()
-                .Select(dbModel => dbModel.ToDomain());
+            var result = await _dbConnection.QueryAsync<ContainerDb>(
+                "SELECT * FROM get_containers_list();"
+            );
+            var containers = result.ToList().Select(dbModel => dbModel.ToDomain());
 
             return containers.ToList();
         }
@@ -36,13 +33,12 @@ public class ContainerRepository : IContainerRepository
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql =
-                "SELECT containers.id ContainerId, containers.container_ship_id ContainerShipId, container_types.id ContainerTypeId, container_types.name ContainerTypeName, cargoes.id CargoId, cargo_types.id CargoTypeId, cargo_types.name CargoTypeName FROM containers JOIN container_types ON containers.container_type_id = container_types.id JOIN cargoes_to_containers ON containers.id = cargoes_to_containers.container_id JOIN cargoes ON  cargoes_to_containers.cargo_id = cargoes.id JOIN cargo_types ON cargoes.cargo_type_id = cargo_types.id WHERE containers.id = @Id";
-            var result = await _dbConnection.QueryAsync<ContainerDB>(sql, new { Id = id });
-            var containers = result.ToList().Select(dbModel => dbModel.ToDomain())
-                .FirstOrDefault();
+            var result = await _dbConnection.QueryAsync<ContainerDb>(
+                "SELECT * FROM get_container_by_id(@Id)",
+                new { Id = id }
+            );
 
-            return containers;
+            return result.First()?.ToDomain();
         }
     }
 
@@ -50,11 +46,15 @@ public class ContainerRepository : IContainerRepository
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql = "UPDATE containers SET container_ship_id = @ContainerShipId WHERE id = @Id";
-            var result =
-                await _dbConnection.ExecuteAsync(sql, new { Id = id, container.ContainerShipId, container.CargoId });
-
-            return result;
+            return await _dbConnection.ExecuteAsync(
+                "SELECT update_container(@Id, @ContainerShipId, @CargoId);",
+                new
+                {
+                    Id = id,
+                    container.ContainerShipId,
+                    container.CargoId
+                }
+            );
         }
     }
 
@@ -62,11 +62,10 @@ public class ContainerRepository : IContainerRepository
     {
         using (var _dbConnection = new NpgsqlConnection(_connectionString))
         {
-            var sql =
-                "INSERT INTO containers (container_ship_id, container_type_id) values (@ContainerShipId, @ContainerTypeId) RETURNING id";
-            var result = await _dbConnection.ExecuteAsync(sql, container);
-
-            return result;
+            return await _dbConnection.ExecuteAsync(
+                "SELECT create_container(@ContainerShipId, @CargoId);",
+                container
+            );
         }
     }
 
@@ -76,14 +75,16 @@ public class ContainerRepository : IContainerRepository
         {
             _dbConnection.Open();
 
-            var sqlString = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             foreach (var containerId in containersIds)
-                sqlString.Append(
-                    $"UPDATE containers SET container_ship_id = '{containerShipId}' WHERE id = '{containerId}';");
+            {
+                stringBuilder.Append(
+                    $"SELECT attach_container_to_container_ship({containerId}, {containerShipId});"
+                );
+            }
 
-            var result = await _dbConnection.ExecuteAsync(sqlString.ToString());
-            return result;
+            return await _dbConnection.ExecuteAsync(stringBuilder.ToString());
         }
     }
 
@@ -93,14 +94,16 @@ public class ContainerRepository : IContainerRepository
         {
             _dbConnection.Open();
 
-            var sqlString = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             foreach (var containerId in containersIds)
-                sqlString.Append(
-                    $"UPDATE containers SET container_ship_id = NULL WHERE id = '{containerId}';");
+            {
+                stringBuilder.Append(
+                    $"SELECT detach_container_from_container_ship({containerId});"
+                );
+            }
 
-            var result = await _dbConnection.ExecuteAsync(sqlString.ToString());
-            return result;
+            return await _dbConnection.ExecuteAsync(stringBuilder.ToString());
         }
     }
 }

@@ -2,5 +2,5 @@
 
 public class CargoCreateRequest
 {
-    public int CargoTypeId { get; set; }
+    public int CargoTypeId { get; init; }
 }
