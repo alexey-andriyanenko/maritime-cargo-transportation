@@ -4,13 +4,18 @@
     first_name varchar(50)        not null,
     last_name  varchar(50)        not null,
     email      varchar(50) unique not null,
+    phone      varchar(50) unique not null,
     password   varchar(50)        not null
 );
 
 CREATE TABLE companies
 (
     id   serial primary key,
-    name varchar(50) unique not null
+    name varchar(50) unique not null,
+    email varchar(50) unique not null,
+    phone varchar(50) unique not null,
+    address varchar(100),
+    website varchar(50)
 );
 
 CREATE TABLE users_to_companies
@@ -40,7 +45,12 @@ CREATE TABLE ships
     name         varchar(50) unique not null,
     country_id      int                not null references countries (id),
     ship_type_id int                not null references ship_types (id),
-    company_id   int                not null references companies (id)
+    company_id   int                not null references companies (id),
+    length       int                not null,
+    beam         int                not null,
+    draft        int                not null,
+    year_built   int                not null,
+    imo          varchar(50)        not null
 );
 
 CREATE TABLE container_ship_size_types
@@ -71,7 +81,8 @@ CREATE TABLE container_ships
 (
     id      serial primary key,
     ship_id int not null references ships (id),
-    size_id int not null references container_ship_size_types (id)
+    size_id int not null references container_ship_size_types (id),
+    capacity int not null
 );
 
 CREATE TABLE containers
@@ -90,74 +101,19 @@ CREATE TABLE cargoes_to_containers
 
 -- seed
 
-insert into users (first_name, last_name, email, password)
-values ('Root', 'User', 'admin@example.com', 'root'),
-       ('Ronny', 'Wishart', 'rwishart1@state.tx.us', 'sY3*<SP(meGE'),
-       ('Rhody', 'Mardling', 'rmardling2@purevolume.com', 'mC6_%?(y'),
-       ('Beaufort', 'Emmett', 'bemmett3@360.cn', 'fF2(|AHqvu''%oK'),
-       ('Colman', 'Cluitt', 'ccluitt4@blog.com', 'qB5{|3,)#qk''PE1'),
-       ('Nalani', 'Danniell', 'ndanniell5@unblog.fr', 'zI7.5J_K,w\F'),
-       ('Brock', 'Sayers', 'bsayers6@unc.edu', 'mU3~Iv)KNq@jxLLF'),
-       ('Hillyer', 'Kale', 'hkale7@utexas.edu', 'lU0&G_BvYc7"E'),
-       ('Langston', 'Brewitt', 'lbrewitt8@census.gov', 'uV2@"jX''A'),
-       ('Dulce', 'Edyson', 'dedyson9@mysql.com', 'yZ0=)mC@g<kWW'),
-       ('Natala', 'Alessandretti', 'nalessandretti0@godaddy.com', 'iK2#|c(HzMJ');
+insert into users (first_name, last_name, email, phone, password)
+values ('Root', 'User', 'admin@example.com', '9999999999', 'root'),
+     ('Dud', 'Metheringham', 'dmetheringham0@etsy.com', '2539381787', 'bI6\V#U9b%~'),
+     ('Lennard', 'Gentile', 'lgentile1@list-manage.com', '9985297283', 'hW9(>_aF>');
 
-insert into companies (name)
-values ('JumpXS'),
-       ('Thoughtblab'),
-       ('Eazzy'),
-       ('Kwinu'),
-       ('Vinder'),
-       ('Quinu'),
-       ('Edgeblab'),
-       ('Victory'),
-       ('Jaloo'),
-       ('Kazio'),
-       ('Unrealmix'),
-       ('Layo'),
-       ('Skidoo'),
-       ('Realmix'),
-       ('Yodel'),
-       ('Unrealcube'),
-       ('Zooveo'),
-       ('Linktype'),
-       ('Meevee'),
-       ('Blogtags'),
-       ('Yambee'),
-       ('Brightbean'),
-       ('Meembee'),
-       ('Realcube'),
-       ('Eamia'),
-       ('Kamba');
+insert into companies (name, email, phone, address, website)
+values ('Maritime Logistics', 'maritimelogistics@dcorp.com', '6065664001', 'PO Box 39473', 'maritimelogistics.com');
+
 
 INSERT INTO users_to_companies (user_id, company_id)
 values (1, 1),
-       (1, 2),
-       (1, 3),
-       (2, 4),
-       (2, 5),
-       (2, 6),
-       (3, 7),
-       (3, 8),
-       (3, 9),
-       (4, 10),
-       (4, 11),
-       (4, 12),
-       (5, 13),
-       (5, 14),
-       (5, 15),
-       (6, 16),
-       (6, 17),
-       (6, 18),
-       (7, 19),
-       (7, 20),
-       (7, 21),
-       (8, 22),
-       (8, 23),
-       (9, 24),
-       (9, 25),
-       (9, 26);
+       (2, 1),
+       (3, 1);
 
 INSERT INTO countries (country_code, name, code)
 VALUES
@@ -456,14 +412,10 @@ values ('General-purpose dry van'),
        ('Log cradle'),
        ('Trash container');
 
-INSERT INTO ships (name, company_id, country_id, ship_type_id)
-values ('Floriston', 1, 1, 1),
-       ('Hampton Court', 1, 2, 1),
-       ('Musquito', 1, 3, 1),
-       ('The Oryx', 2, 4, 1),
-       ('The Godetia', 2, 4, 1),
-       ('Northrepps', 3, 5, 1),
-       ('The Kempthorne', 4, 6, 1);
+INSERT INTO ships (name, company_id, country_id, ship_type_id, length, beam, draft, imo, year_built)
+values ('PRELUDE', 1, 50, 1, 366, 61, 15, 9930064, 2012),
+       ('PIONEERING SPIRIT', 1, 50, 1, 387, 52, 17, 9930062, 2015),
+       ('CORAL-SUL FLNG', 1, 50, 1, 345, 39, 14, 9930013, 2008);
 
 INSERT INTO cargoes (cargo_type_id)
 values (1),
@@ -475,21 +427,7 @@ values (1),
        (7),
        (8);
 
-INSERT INTO container_ships (ship_id, size_id)
-VALUES (1, 2),
-       (2, 3),
-       (3, 4),
-       (4, 5),
-       (5, 6),
-       (6, 7),
-       (7, 1);
-
-INSERT INTO containers (container_type_id, container_ship_id)
-VALUES (1, 1),
-       (2, 1),
-       (3, 1);
-
-INSERT INTO cargoes_to_containers (cargo_id, container_id)
-VALUES (1, 1),
-       (2, 2),
-       (3, 3);
+INSERT INTO container_ships (ship_id, size_id, capacity)
+VALUES (1, 2, 14501),
+       (2, 2, 13722),
+       (3, 2, 15731);

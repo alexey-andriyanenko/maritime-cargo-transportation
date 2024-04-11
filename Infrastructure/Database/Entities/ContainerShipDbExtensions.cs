@@ -1,4 +1,5 @@
 ﻿using Domain.Cargo.Entities;
+using Domain.Company.Entities;
 using Domain.Container.Entities;
 using Domain.Country.Entities;
 using Domain.Ship.Entities;
@@ -16,12 +17,27 @@ public static class ContainerShipDbExtensions
         {
             Id = containerShipDb.ship_id,
             Name = containerShipDb.ship_name,
+            Length = containerShipDb.ship_length,
+            Beam = containerShipDb.ship_beam,
+            Draft = containerShipDb.ship_draft,
+            Imo = containerShipDb.ship_imo,
+            YearBuilt = containerShipDb.ship_year_built,
+            Capacity = containerShipDb.container_ship_capacity,
             Country = new Country
             {
                 Id = containerShipDb.country_id,
                 Name = containerShipDb.country_name,
                 CountryCode = containerShipDb.country_country_code,
                 Code = containerShipDb.country_code
+            },
+            Company = new Company
+            {
+                Id = containerShipDb.company_id,
+                Name = containerShipDb.company_name,
+                Email = containerShipDb.company_email,
+                Phone = containerShipDb.company_phone,
+                Address = containerShipDb.company_address,
+                Website = containerShipDb.company_website
             },
             ShipType = new ShipType
             {

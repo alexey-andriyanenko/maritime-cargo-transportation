@@ -3,9 +3,14 @@ SELECT users.id user_id,
        users.first_name user_first_name,
        users.last_name user_last_name,
        users.email user_email,
+       users.phone user_phone,
        users.password user_password,
        companies.id company_id,
-       companies.name company_name
+       companies.name company_name,
+       companies.address company_address,
+       companies.phone company_phone,
+       companies.email company_email,
+       companies.website company_website
 FROM users
          JOIN users_to_companies ON users.id = users_to_companies.user_id
          JOIN companies ON users_to_companies.company_id = companies.id;

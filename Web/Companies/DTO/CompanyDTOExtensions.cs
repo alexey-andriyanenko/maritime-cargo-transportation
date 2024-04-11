@@ -9,7 +9,11 @@ public static class CompanyDTOExtensions
         return new CompanyResponse
         {
             Id = company.Id,
-            Name = company.Name
+            Name = company.Name,
+            Email = company.Email,
+            Phone = company.Phone,
+            Address = company.Address,
+            Website = company.Website
         };
     }
 }
